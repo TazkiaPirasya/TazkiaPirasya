@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+   
+
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&display=swap");
+
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: "Poppins", sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background-color: #000000;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        nav {
+            width: 100%;
+            height: 10vh;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .logo {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* UBAH: Warna Logo ke #e3651d */
+        .logo span {
+            color: #e3651d;
+            text-shadow: 0 0 10px #e3651d;
+        }
+
+        .hamburg,
+        .cancel {
+            cursor: pointer;
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            color: white;
+            display: none;
+            font-size: clamp(2.5rem, 0.5rem + 5vw, 3rem);
+        }
+
+        .nav-container .links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-container .links a {
+            font-size: 1.2rem;
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+            font-weight: 550;
+            transition: 0.3s linear;
+        }
+
+        .nav-container .links a:hover {
+            color: #e3651d;
+            border-bottom: 2px solid #e3651d;
+        }
+
+        .nav-container .links .active {
+            color: #e3651d;
+            border-bottom: 2px solid #e3651d;
+        }
+
+        .dropdown {
+            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(-500px);
+            width: 100%;
+            height: auto;
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 20px black;
+            transition: 0.2s linear;
+        }
+
+        .dropdown .links a {
+            display: flex;
+            color: white;
+            text-decoration: none;
+            padding: 15px 0;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s linear;
+        }
+
+        .dropdown .links a:hover {
+            background-color: #e3651d;
+            color: black;
+        }
+
+        /* About Section Styles */
+        .about-container {
+            width: 100%;
+            min-height: 90vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-content {
+            width: 80%;
+            max-width: 1200px;
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow-y: auto;
+            max-height: 85vh;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        /* UBAH: Warna Judul About Me ke #e3651d */
+        .about-header h1 {
+            font-size: 2.5rem;
+            color: #e3651d;
+            text-shadow: 0 0 10px #e3651d;
+            margin-bottom: 1rem;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .about-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: none;
+            border: none;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* UBAH: Warna Judul Who Am I? ke #e3651d */
+        .about-text h2 {
+            color: #e3651d;
+            margin-bottom: 1rem;
+        }
+
+        .about-text p {
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: #e0e0e0;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #e3651d;
+            /* Konversi #e3651d ke RGB: 227, 101, 29 */
+            box-shadow: 0 5px 15px rgba(227, 101, 29, 0.2);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .content-card:hover .card-image img {
+            transform: scale(1.1);
+        }
+
+        .card-info {
+            padding: 1.5rem;
+        }
+
+        .card-info h3 {
+            color: #e3651d;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-info p {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+
+        .card-info .technologies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .technology-tag {
+            /* Konversi #e3651d ke RGB: 227, 101, 29 */
+            background: rgba(227, 101, 29, 0.2);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #e3651d;
+            border: 1px solid rgba(227, 101, 29, 0.3);
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            color: #e3651d;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            border: 2px solid #e3651d;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            background: #e3651d;
+            color: black;
+            box-shadow: 0 0 15px #e3651d;
+        }
+
+        .award-icon {
+            font-size: 2rem;
+            color: #e3651d;
+            margin-bottom: 1rem;
+        }
+
+        .client-testimonial {
+            font-style: italic;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #e3651d;
+            color: #ddd;
+        }
+
+        @media (max-width: 884px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav .logo {
+                position: absolute;
+                top: 16px;
+                left: 15px;
+                font-size: 1.5rem;
+            }
+
+            .nav-container .links {
+                display: none;
+            }
+
+            .hamburg,
+            .cancel {
+                display: block;
+            }
+        }
+
+        @media (max-width: 440px) {
+            .about-container {
+                padding: 1rem;
+            }
+
+            .about-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .about-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .about-text h2 {
+                font-size: 1.4rem;
+            }
+
+            .about-text p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+
+            .about-image {
+                width: 100%;
+                max-height: 250px;
+            }
+        }
+    </style>
+    <title>About - Portfolio Website</title>
+</head>
+
+<body>
+
+    <!-- Navigasi -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo" data-aos="zoom-in" data-aos-duration="0">
+                Tazkia <span></span>
+            </div>
+            <div class="links">
+                <div class="link" data-aos="fade-up" data-aos-duration="0" data-aos-delay="100"><a
+                        href="index.html">Home</a></div>
+                <div class="link active" data-aos="fade-up" data-aos-duration="0" data-aos-delay="200"><a
+                        href="about.html">About</a></div>
+                <div class="link" data-aos="fade-up" data-aos-duration="0" data-aos-delay="300"><a
+                        href="skills.html">Skills</a></div>
+
+                <div class="link" data-aos="fade-up" data-aos-duration="0" data-aos-delay="500"><a
+                        href="contact.html">Contact</a></div>
+            </div>
+        
+        </div>
+    </nav>
+
+    <!-- Konten utama halaman About -->
+    <div class="about-container">
+        <div class="about-content" id="aboutContent">
+            <!-- Bagian header -->
+            <div class="about-header" data-aos="fade-down" data-aos-duration="00">
+                <h1>About Me</h1>
+            </div>
+
+            <!-- Grid untuk gambar dan teks deskripsi -->
+            <div class="about-grid">
+                <div class="about-image" data-aos="fade-right" data-aos-duration="1500">
+                    <img src="cca.jpeg" alt="Tazkia">
+                </div>
+                <div class="about-text" data-aos="fade-left" data-aos-duration="1500">
+                    <h2>Who Am I?</h2>
+                    <p>I am a passionate developer and designer with a keen eye for detail and a drive for creating innovative digital solutions. With expertise in web development, UI/UX design, and content creation, I bring ideas to life through code and creativity.</p>
+                    <p>My journey in technology began with a simple curiosity and has evolved into a professional pursuit of excellence in digital craftsmanship.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Link ke library animasi AOS -->
+        <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+        <!-- JavaScript -->
+        <script>
+            AOS.init({ offset: 0 });
+
+            function hamburg() {
+                const navbar = document.querySelector(".dropdown")
+                navbar.style.transform = "translateY(0px)"
+            }
+
+            function cancel() {
+                const navbar = document.querySelector(".dropdown")
+                navbar.style.transform = "translateY(-500px)"
+            }
+        </script>
+</body>
+
+</html>
