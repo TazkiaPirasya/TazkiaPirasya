@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil — Tazkia Pirasya</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            soft: {
+              bg: '#f5f2ee',
+              card: '#ffffff',
+              text: '#2d2a27',
+              muted: '#8a8580',
+              accent: '#7c9a8e',
+              accentLight: '#e8f0ec',
+              warm: '#d4a574',
+              warmLight: '#faf3eb',
+              pink: '#c9a0a0',
+              pinkLight: '#f7eeee',
+              border: 'rgba(45,42,39,0.08)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: #f5f2ee; color: #2d2a27; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f5f2ee; }
+    ::-webkit-scrollbar-thumb { background: #c4bfb8; border-radius: 3px; }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    .fade-left {
+      opacity: 0;
+      transform: translateX(-40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-left.visible { opacity: 1; transform: translateX(0); }
+
+    .fade-right {
+      opacity: 0;
+      transform: translateX(40px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .fade-right.visible { opacity: 1; transform: translateX(0); }
+
+    .scale-in {
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .scale-in.visible { opacity: 1; transform: scale(1); }
+
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+    .stagger-5 { transition-delay: 0.5s; }
+    .stagger-6 { transition-delay: 0.6s; }
+
+    @keyframes ringRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .profile-ring::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: conic-gradient(#7c9a8e, #d4a574, #c9a0a0, #7c9a8e);
+      animation: ringRotate 6s linear infinite;
+      z-index: -1;
+    }
+    .profile-ring::after {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: #f5f2ee;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      33% { transform: translateY(-15px) rotate(5deg); }
+      66% { transform: translateY(8px) rotate(-3deg); }
+    }
+    .float-dot {
+      animation: float var(--duration, 5s) ease-in-out infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    .skill-bar-fill {
+      width: 0;
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .skill-bar-fill.animate { width: var(--target-width); }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s infinite;
+      color: #7c9a8e;
+      font-weight: 300;
+    }
+
+    .nav-link { position: relative; }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #7c9a8e;
+      border-radius: 1px;
+      transition: width 0.3s ease;
+    }
+    .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+    .card-hover { transition: transform 0.4s ease, box-shadow 0.4s ease; }
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(45,42,39,0.08);
+    }
+
+    .btn-ripple { position: relative; overflow: hidden; }
+    .btn-ripple .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      transform: scale(0);
+      animation: rippleAnim 0.6s linear;
+      pointer-events: none;
+    }
+    @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, opacity 0.3s ease;
+      opacity: 0;
+    }
+    .mobile-menu.open { max-height: 300px; opacity: 1; }
+
+    .toast {
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.4s ease;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Decorative Dots -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="float-dot absolute top-[10%] left-[8%] w-3 h-3 rounded-full bg-soft-accent/20" style="--duration:6s;--delay:0s"></div>
+    <div class="float-dot absolute top-[25%] right-[12%] w-2 h-2 rounded-full bg-soft-warm/30" style="--duration:7s;--delay:1s"></div>
+    <div class="float-dot absolute top-[55%] left-[5%] w-4 h-4 rounded-full bg-soft-pink/20" style="--duration:8s;--delay:2s"></div>
+    <div class="float-dot absolute top-[70%] right-[8%] w-2.5 h-2.5 rounded-full bg-soft-accent/25" style="--duration:5s;--delay:0.5s"></div>
+    <div class="float-dot absolute top-[40%] left-[50%] w-2 h-2 rounded-full bg-soft-warm/20" style="--duration:9s;--delay:3s"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="flex items-center justify-between h-20">
+        <a href="#beranda" class="text-xl font-semibold tracking-tight text-soft-text">
+          Tazkia<span class="text-soft-accent">.</span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-10">
+          <a href="#beranda" class="nav-link active text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors">Profil</a>
+          <a href="#tentang" class="nav-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors">Tentang</a>
+          <a href="#keahlian" class="nav-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors">Keahlian</a>
+          <a href="#kontak" class="nav-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors">Kontak</a>
+        </div>
+
+        <!-- CTA Button Desktop -->
+        <a href="#kontak" class="hidden md:inline-flex btn-ripple items-center gap-2 bg-soft-accent text-white text-sm font-medium px-5 py-2.5 rounded-full hover:bg-soft-accent/90 transition-colors">
+          Hubungi Saya
+        </a>
+
+        <!-- Mobile Hamburger -->
+        <button id="menuBtn" class="md:hidden flex flex-col gap-1.5 p-2" aria-label="Menu">
+          <span class="menu-line w-6 h-0.5 bg-soft-text rounded-full transition-all duration-300"></span>
+          <span class="menu-line w-6 h-0.5 bg-soft-text rounded-full transition-all duration-300"></span>
+          <span class="menu-line w-4 h-0.5 bg-soft-text rounded-full transition-all duration-300"></span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div id="mobileMenu" class="mobile-menu md:hidden">
+        <div class="pb-6 pt-2 flex flex-col gap-4 border-t border-soft-border">
+          <a href="#beranda" class="mobile-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors py-1">Profil</a>
+          <a href="#tentang" class="mobile-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors py-1">Tentang</a>
+          <a href="#keahlian" class="mobile-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors py-1">Keahlian</a>
+          <a href="#kontak" class="mobile-link text-sm font-medium text-soft-text/80 hover:text-soft-text transition-colors py-1">Kontak</a>
+          <a href="#kontak" class="inline-flex items-center justify-center bg-soft-accent text-white text-sm font-medium px-5 py-2.5 rounded-full mt-2">Hubungi Saya</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="beranda" class="min-h-screen flex items-center relative">
+    <div class="max-w-6xl mx-auto px-6 md:px-12 w-full pt-20">
+      <div class="flex flex-col md:flex-row items-center gap-12 md:gap-20">
+        <div class="flex-1 text-center md:text-left">
+          <div class="fade-up stagger-1 inline-flex items-center gap-2 bg-soft-accentLight text-soft-accent text-xs font-medium px-4 py-2 rounded-full mb-6">
+            <span class="w-2 h-2 rounded-full bg-soft-accent animate-pulse"></span>
+            Tersedia untuk kolaborasi
+          </div>
+          <h1 class="fade-up stagger-2 text-4xl md:text-6xl font-medium tracking-tight leading-[1.1] mb-6">
+            Hai, saya<br>
+            <span class="text-soft-accent">Tazkia Pirasya</span>
+          </h1>
+          <p class="fade-up stagger-3 text-soft-muted text-base md:text-lg leading-relaxed mb-4 max-w-lg mx-auto md:mx-0">
+            <span id="typingText" class="typing-cursor"></span>
+          </p>
+          <p class="fade-up stagger-4 text-soft-muted/70 text-sm leading-relaxed mb-8 max-w-md mx-auto md:mx-0">
+            Berbasis di Jakarta, Indonesia. Menciptakan pengalaman digital yang bermakna dan estetik.
+          </p>
+          <div class="fade-up stagger-5 flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+            <a href="#tentang" class="btn-ripple inline-flex items-center gap-2 bg-soft-accent text-white text-sm font-medium px-7 py-3 rounded-full hover:bg-soft-accent/90 transition-colors shadow-lg shadow-soft-accent/20">
+              Kenali Saya
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </a>
+            <a href="#kontak" class="inline-flex items-center gap-2 text-sm font-medium text-soft-text/70 hover:text-soft-text px-7 py-3 rounded-full border border-soft-border hover:border-soft-text/20 transition-all">
+              Hubungi Saya
+            </a>
+          </div>
+
+          <div class="fade-up stagger-6 flex items-center gap-8 mt-12 justify-center md:justify-start">
+            <div>
+              <div class="text-2xl font-semibold text-soft-text counter" data-target="3">0</div>
+              <div class="text-xs text-soft-muted mt-1">Tahun Pengalaman</div>
+            </div>
+            <div class="w-px h-10 bg-soft-border"></div>
+            <div>
+              <div class="text-2xl font-semibold text-soft-text counter" data-target="25">0</div>
+              <div class="text-xs text-soft-muted mt-1">Proyek Selesai</div>
+            </div>
+            <div class="w-px h-10 bg-soft-border"></div>
+            <div>
+              <div class="text-2xl font-semibold text-soft-text counter" data-target="15">0</div>
+              <div class="text-xs text-soft-muted mt-1">Klien Puas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="flex-shrink-0 fade-up stagger-3">
+          <div class="relative">
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-soft-accent/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-soft-warm/10 rounded-full blur-3xl"></div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-soft-pink/5 rounded-full blur-2xl"></div>
+
+            <div class="relative profile-ring w-56 h-56 md:w-72 md:h-72 rounded-full z-10">
+              <img
+                src="https://picsum.photos/seed/aisyah-profile/400/400.jpg"
+                alt="Aisyah Putri"
+                class="w-full h-full rounded-full object-cover border-4 border-soft-bg"
+              >
+            </div>
+
+            <div class="absolute -bottom-2 -right-2 md:bottom-2 md:-right-4 bg-white rounded-2xl px-4 py-3 shadow-lg shadow-black/5 z-20 float-dot" style="--duration:4s;--delay:1s">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-soft-accentLight flex items-center justify-center">
+                  <i data-lucide="code-2" class="w-4 h-4 text-soft-accent"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-medium text-soft-text">Frontend Dev</div>
+                  <div class="text-[10px] text-soft-muted">React & Vue</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="absolute -top-2 -left-2 md:top-4 md:-left-6 bg-white rounded-2xl px-4 py-3 shadow-lg shadow-black/5 z-20 float-dot" style="--duration:5s;--delay:2s">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-soft-warmLight flex items-center justify-center">
+                  <i data-lucide="palette" class="w-4 h-4 text-soft-warm"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-medium text-soft-text">UI/UX Design</div>
+                  <div class="text-[10px] text-soft-muted">Figma</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="tentang" class="py-24 md:py-32 relative">
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="fade-up text-center mb-16">
+        <span class="inline-block text-xs font-medium tracking-widest uppercase text-soft-accent mb-4">Tentang Saya</span>
+        <h2 class="text-3xl md:text-4xl font-medium tracking-tight">Mengenal lebih dekat<span class="text-soft-accent">.</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+        <div class="fade-left">
+          <div class="relative rounded-3xl overflow-hidden aspect-[4/5] bg-soft-card shadow-xl shadow-black/5">
+            <img src="https://picsum.photos/seed/aisyah-about/600/750.jpg" alt="About" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-soft-bg/60 via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6">
+              <div class="bg-white/80 backdrop-blur-md rounded-2xl p-5">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 rounded-full bg-soft-accentLight flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="heart" class="w-5 h-5 text-soft-accent"></i>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium text-soft-text">Passionate Creator</div>
+                    <div class="text-xs text-soft-muted mt-0.5">Mengubah ide menjadi pengalaman digital yang menyenangkan</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fade-right">
+          <h3 class="text-2xl font-medium tracking-tight mb-6">
+            Saya percaya desain yang baik adalah desain yang <span class="text-soft-accent">tak terasa</span>
+          </h3>
+          <p class="text-soft-muted leading-relaxed mb-6">
+            Dengan latar belakang di bidang desain dan pengembangan web, saya membantu bisnis dan individu membangun kehadiran digital yang tidak hanya cantik, tapi juga fungsional dan berdampak.
+          </p>
+          <p class="text-soft-muted leading-relaxed mb-8">
+            Setiap proyek yang saya kerjakan dimulai dari pemahaman mendalam tentang pengguna. Saya percaya bahwa teknologi terbaik adalah yang membantu, bukan menghalangi.
+          </p>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl p-5 border border-soft-border">
+              <i data-lucide="map-pin" class="w-5 h-5 text-soft-accent mb-3"></i>
+              <div class="text-xs text-soft-muted mb-1">Lokasi</div>
+              <div class="text-sm font-medium">Jakarta, ID</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-soft-border">
+              <i data-lucide="graduation-cap" class="w-5 h-5 text-soft-warm mb-3"></i>
+              <div class="text-xs text-soft-muted mb-1">Pendidikan</div>
+              <div class="text-sm font-medium">S1 Informatika</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-soft-border">
+              <i data-lucide="briefcase" class="w-5 h-5 text-soft-pink mb-3"></i>
+              <div class="text-xs text-soft-muted mb-1">Peran</div>
+              <div class="text-sm font-medium">UI/UX & Frontend</div>
+            </div>
+            <div class="bg-white rounded-2xl p-5 border border-soft-border">
+              <i data-lucide="languages" class="w-5 h-5 text-soft-accent mb-3"></i>
+              <div class="text-xs text-soft-muted mb-1">Bahasa</div>
+              <div class="text-sm font-medium">ID, EN, JP</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="keahlian" class="py-24 md:py-32 relative bg-white/50">
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="fade-up text-center mb-16">
+        <span class="inline-block text-xs font-medium tracking-widest uppercase text-soft-accent mb-4">Keahlian</span>
+        <h2 class="text-3xl md:text-4xl font-medium tracking-tight">Apa yang saya bisa<span class="text-soft-accent">.</span></h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 mb-16">
+        <div class="fade-up stagger-1 card-hover bg-white rounded-3xl p-8 border border-soft-border">
+          <div class="w-14 h-14 rounded-2xl bg-soft-accentLight flex items-center justify-center mb-6">
+            <i data-lucide="layout" class="w-6 h-6 text-soft-accent"></i>
+          </div>
+          <h3 class="text-lg font-medium mb-3">UI/UX Design</h3>
+          <p class="text-sm text-soft-muted leading-relaxed">Merancang antarmuka yang intuitif dan pengalaman pengguna yang menyenangkan menggunakan Figma.</p>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="text-[11px] font-medium text-soft-accent bg-soft-accentLight px-3 py-1 rounded-full">Figma</span>
+            <span class="text-[11px] font-medium text-soft-accent bg-soft-accentLight px-3 py-1 rounded-full">Prototyping</span>
+            <span class="text-[11px] font-medium text-soft-accent bg-soft-accentLight px-3 py-1 rounded-full">User Research</span>
+          </div>
+        </div>
+
+        <div class="fade-up stagger-2 card-hover bg-white rounded-3xl p-8 border border-soft-border">
+          <div class="w-14 h-14 rounded-2xl bg-soft-warmLight flex items-center justify-center mb-6">
+            <i data-lucide="code-2" class="w-6 h-6 text-soft-warm"></i>
+          </div>
+          <h3 class="text-lg font-medium mb-3">Frontend Dev</h3>
+          <p class="text-sm text-soft-muted leading-relaxed">Membangun website yang responsif, cepat, dan interaktif dengan teknologi modern.</p>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="text-[11px] font-medium text-soft-warm bg-soft-warmLight px-3 py-1 rounded-full">React</span>
+            <span class="text-[11px] font-medium text-soft-warm bg-soft-warmLight px-3 py-1 rounded-full">Vue</span>
+            <span class="text-[11px] font-medium text-soft-warm bg-soft-warmLight px-3 py-1 rounded-full">Tailwind</span>
+          </div>
+        </div>
+
+        <div class="fade-up stagger-3 card-hover bg-white rounded-3xl p-8 border border-soft-border">
+          <div class="w-14 h-14 rounded-2xl bg-soft-pinkLight flex items-center justify-center mb-6">
+            <i data-lucide="smartphone" class="w-6 h-6 text-soft-pink"></i>
+          </div>
+          <h3 class="text-lg font-medium mb-3">Mobile Design</h3>
+          <p class="text-sm text-soft-muted leading-relaxed">Mendesain aplikasi mobile yang beautiful dan user-friendly untuk iOS dan Android.</p>
+          <div class="flex flex-wrap gap-2 mt-5">
+            <span class="text-[11px] font-medium text-soft-pink bg-soft-pinkLight px-3 py-1 rounded-full">iOS</span>
+            <span class="text-[11px] font-medium text-soft-pink bg-soft-pinkLight px-3 py-1 rounded-full">Android</span>
+            <span class="text-[11px] font-medium text-soft-pink bg-soft-pinkLight px-3 py-1 rounded-full">Flutter</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-2xl mx-auto space-y-6">
+        <div class="fade-up stagger-1 skill-item">
+          <div class="flex justify-between mb-2">
+            <span class="text-sm font-medium">UI/UX Design</span>
+            <span class="text-sm text-soft-muted">92%</span>
+          </div>
+          <div class="h-2.5 bg-soft-bg rounded-full overflow-hidden">
+            <div class="skill-bar-fill h-full bg-gradient-to-r from-soft-accent to-soft-accent/70 rounded-full" style="--target-width: 92%"></div>
+          </div>
+        </div>
+        <div class="fade-up stagger-2 skill-item">
+          <div class="flex justify-between mb-2">
+            <span class="text-sm font-medium">React / Next.js</span>
+            <span class="text-sm text-soft-muted">88%</span>
+          </div>
+          <div class="h-2.5 bg-soft-bg rounded-full overflow-hidden">
+            <div class="skill-bar-fill h-full bg-gradient-to-r from-soft-warm to-soft-warm/70 rounded-full" style="--target-width: 88%"></div>
+          </div>
+        </div>
+        <div class="fade-up stagger-3 skill-item">
+          <div class="flex justify-between mb-2">
+            <span class="text-sm font-medium">Vue.js</span>
+            <span class="text-sm text-soft-muted">80%</span>
+          </div>
+          <div class="h-2.5 bg-soft-bg rounded-full overflow-hidden">
+            <div class="skill-bar-fill h-full bg-gradient-to-r from-soft-pink to-soft-pink/70 rounded-full" style="--target-width: 80%"></div>
+          </div>
+        </div>
+        <div class="fade-up stagger-4 skill-item">
+          <div class="flex justify-between mb-2">
+            <span class="text-sm font-medium">Tailwind CSS</span>
+            <span class="text-sm text-soft-muted">95%</span>
+          </div>
+          <div class="h-2.5 bg-soft-bg rounded-full overflow-hidden">
+            <div class="skill-bar-fill h-full bg-gradient-to-r from-soft-accent to-soft-warm rounded-full" style="--target-width: 95%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="kontak" class="py-24 md:py-32 bg-white/50">
+    <div class="max-w-6xl mx-auto px-6 md:px-12">
+      <div class="fade-up text-center mb-16">
+        <span class="inline-block text-xs font-medium tracking-widest uppercase text-soft-accent mb-4">Kontak</span>
+        <h2 class="text-3xl md:text-4xl font-medium tracking-tight">Mari berbicara<span class="text-soft-accent">.</span></h2>
+        <p class="text-soft-muted mt-4 max-w-md mx-auto">Punya proyek menarik atau sekadar ingin ngobrol? Jangan ragu untuk menghubungi saya.</p>
+      </div>
+
+      <div class="grid md:grid-cols-5 gap-8 max-w-4xl mx-auto">
+        <div class="md:col-span-2 space-y-4">
+          <div class="fade-left stagger-1 flex items-center gap-4 bg-white rounded-2xl p-5 border border-soft-border">
+            <div class="w-11 h-11 rounded-xl bg-soft-accentLight flex items-center justify-center flex-shrink-0">
+              <i data-lucide="mail" class="w-5 h-5 text-soft-accent"></i>
+            </div>
+            <div>
+              <div class="text-xs text-soft-muted mb-0.5">Email</div>
+              <div class="text-sm font-medium">nonashofiaulia@gmail.com</div>
+            </div>
+          </div>
+          <div class="fade-left stagger-2 flex items-center gap-4 bg-white rounded-2xl p-5 border border-soft-border">
+            <div class="w-11 h-11 rounded-xl bg-soft-warmLight flex items-center justify-center flex-shrink-0">
+              <i data-lucide="phone" class="w-5 h-5 text-soft-warm"></i>
+            </div>
+            <div>
+              <div class="text-xs text-soft-muted mb-0.5">Telepon</div>
+              <div class="text-sm font-medium">0831-5942-1691</div>
+            </div>
+          </div>
+          <div class="fade-left stagger-3 flex items-center gap-4 bg-white rounded-2xl p-5 border border-soft-border">
+            <div class="w-11 h-11 rounded-xl bg-soft-pinkLight flex items-center justify-center flex-shrink-0">
+              <i data-lucide="map-pin" class="w-5 h-5 text-soft-pink"></i>
+            </div>
+            <div>
+              <div class="text-xs text-soft-muted mb-0.5">Lokasi</div>
+              <div class="text-sm font-medium">Jakarta Selatan</div>
+            </div>
+          </div>
+
+          <div class="fade-left stagger-4 flex gap-3 pt-4">
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-soft-border flex items-center justify-center text-soft-muted hover:text-soft-accent hover:border-soft-accent/30 transition-all">
+              <i data-lucide="github" class="w-5 h-5"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-soft-border flex items-center justify-center text-soft-muted hover:text-soft-accent hover:border-soft-accent/30 transition-all">
+              <i data-lucide="linkedin" class="w-5 h-5"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-soft-border flex items-center justify-center text-soft-muted hover:text-soft-accent hover:border-soft-accent/30 transition-all">
+              <i data-lucide="instagram" class="w-5 h-5"></i>
+            </a>
+            <a href="#" class="w-11 h-11 rounded-xl bg-white border border-soft-border flex items-center justify-center text-soft-muted hover:text-soft-accent hover:border-soft-accent/30 transition-all">
+              <i data-lucide="twitter" class="w-5 h-5"></i>
+            </a>
+          </div>
+        </div>
+
+        <form id="contactForm" class="fade-right stagger-2 md:col-span-3 bg-white rounded-3xl p-8 border border-soft-border space-y-5">
+          <div>
+            <label class="text-xs font-medium text-soft-muted mb-2 block">Nama</label>
+            <input type="text" placeholder="Nama lengkap" required class="w-full bg-soft-bg rounded-xl px-4 py-3 text-sm text-soft-text placeholder:text-soft-muted/50 border border-transparent focus:border-soft-accent/30 focus:outline-none transition-colors">
+          </div>
+          <div>
+            <label class="text-xs font-medium text-soft-muted mb-2 block">Email</label>
+            <input type="email" placeholder="email@contoh.com" required class="w-full bg-soft-bg rounded-xl px-4 py-3 text-sm text-soft-text placeholder:text-soft-muted/50 border border-transparent focus:border-soft-accent/30 focus:outline-none transition-colors">
+          </div>
+          <div>
+            <label class="text-xs font-medium text-soft-muted mb-2 block">Pesan</label>
+            <textarea rows="4" placeholder="Ceritakan tentang proyek Anda..." required class="w-full bg-soft-bg rounded-xl px-4 py-3 text-sm text-soft-text placeholder:text-soft-muted/50 border border-transparent focus:border-soft-accent/30 focus:outline-none transition-colors resize-none"></textarea>
+          </div>
+          <button type="submit" class="btn-ripple w-full bg-soft-accent text-white text-sm font-medium py-3.5 rounded-xl hover:bg-soft-accent/90 transition-colors shadow-lg shadow-soft-accent/15 flex items-center justify-center gap-2">
+            Kirim Pesan
+            <i data-lucide="send" class="w-4 h-4"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 border-t border-soft-border">
+    <div class="max-w-6xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-sm text-soft-muted">
+        © 2025 Aisyah Putri. Dibuat dengan <span class="text-soft-pink">♥</span>
+      </div>
+      <div class="flex items-center gap-1 text-sm text-soft-muted">
+        <span>Dibangun menggunakan</span>
+        <span class="font-medium text-soft-text">Tailwind CSS</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast fixed bottom-8 left-1/2 -translate-x-1/2 bg-soft-text text-white text-sm font-medium px-6 py-3.5 rounded-2xl shadow-xl z-[100] flex items-center gap-3">
+    <i data-lucide="check-circle" class="w-5 h-5 text-soft-accent"></i>
+    <span id="toastMsg">Pesan berhasil dikirim!</span>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // ========== Typing Effect ==========
+    const typingEl = document.getElementById('typingText');
+    const phrases = [
+      'Seorang UI/UX Designer & Frontend Developer yang senang menciptakan pengalaman digital yang bermakna.',
+      'Menggabungkan estetika dan fungsi untuk menghasilkan produk digital yang menyenangkan.',
+      'Berdedikasi untuk membangun web yang inklusif, responsif, dan indah dipandang.'
+    ];
+    let phraseIdx = 0, charIdx = 0, isDeleting = false;
+
+    function typeEffect() {
+      const current = phrases[phraseIdx];
+      if (isDeleting) {
+        typingEl.textContent = current.substring(0, charIdx--);
+        if (charIdx < 0) {
+          isDeleting = false;
+          phraseIdx = (phraseIdx + 1) % phrases.length;
+          setTimeout(typeEffect, 400);
+          return;
+        }
+        setTimeout(typeEffect, 25);
+      } else {
+        typingEl.textContent = current.substring(0, charIdx++);
+        if (charIdx > current.length) {
+          isDeleting = true;
+          setTimeout(typeEffect, 2000);
+          return;
+        }
+        setTimeout(typeEffect, 50);
+      }
+    }
+    setTimeout(typeEffect, 800);
+
+    // ========== Scroll Animations ==========
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          if (entry.target.closest('#keahlian')) {
+            entry.target.querySelectorAll('.skill-bar-fill').forEach(bar => bar.classList.add('animate'));
+          }
+          if (entry.target.classList.contains('counter')) {
+            animateCounter(entry.target);
+          }
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.fade-up, .fade-left, .fade-right, .scale-in, .counter').forEach(el => {
+      observer.observe(el);
+    });
+
+    // ========== Counter Animation ==========
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target);
+      const duration = 2000;
+      const start = performance.now();
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased) + '+';
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    }
+
+    // ========== Navbar Scroll Effect ==========
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > 60) {
+        navbar.style.background = 'rgba(245, 242, 238, 0.85)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.borderBottom = '1px solid rgba(45,42,39,0.06)';
+      } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+      }
+      if (currentScroll > lastScroll && currentScroll > 300) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+      lastScroll = currentScroll;
+      updateActiveLink();
+    });
+
+    // ========== Active Nav Link ==========
+    function updateActiveLink() {
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+      let current = '';
+      sections.forEach(section => {
+        const top = section.offsetTop - 150;
+        if (window.scrollY >= top) current = section.getAttribute('id');
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+      });
+    }
+
+    // ========== Mobile Menu ==========
+    const menuBtn = document.getElementById('menuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const menuLines = menuBtn.querySelectorAll('.menu-line');
+    let menuOpen = false;
+
+    menuBtn.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open');
+      if (menuOpen) {
+        menuLines[0].style.transform = 'rotate(45deg) translate(4px, 4px)';
+        menuLines[1].style.opacity = '0';
+        menuLines[2].style.transform = 'rotate(-45deg) translate(3px, -3px)';
+        menuLines[2].style.width = '1.5rem';
+      } else {
+        menuLines[0].style.transform = '';
+        menuLines[1].style.opacity = '1';
+        menuLines[2].style.transform = '';
+        menuLines[2].style.width = '1rem';
+      }
+    });
+
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => {
+        menuOpen = false;
+        mobileMenu.classList.remove('open');
+        menuLines[0].style.transform = '';
+        menuLines[1].style.opacity = '1';
+        menuLines[2].style.transform = '';
+        menuLines[2].style.width = '1rem';
+      });
+    });
+
+    // ========== Button Ripple ==========
+    document.querySelectorAll('.btn-ripple').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        ripple.classList.add('ripple');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        this.appendChild(ripple);
+        setTimeout(() => ripple.remove(), 600);
+      });
+    });
+
+    // ========== Contact Form ==========
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      showToast('Pesan berhasil dikirim! Terima kasih 🎉');
+      this.reset();
+    });
+
+    // ========== Toast ==========
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    // ========== Parallax Mouse ==========
+    const hero = document.getElementById('beranda');
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      hero.querySelectorAll('.float-dot').forEach((dot, i) => {
+        const speed = (i + 1) * 8;
+        dot.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+      });
+    });
+
+    setTimeout(() => lucide.createIcons(), 100);
+  </script>
+</body>
+</html>
